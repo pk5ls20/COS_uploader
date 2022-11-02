@@ -6,27 +6,36 @@ from qcloud_cos import CosS3Client
 import tkinter as tk
 from tkinter import filedialog
 from faker import Faker
+
 f = Faker(locale='zh_CN')
 root = tk.Tk()
 root.withdraw()
 timex = 0
 isreturn = 1
 isallfak = 0
-address = [0]*100000
+address = [0] * 100000
 cos_secret = [0] * 5
-secret_id='none'
-secret_key='none'
-region='none'
+secret_id = 'none'
+secret_key = 'none'
+region = 'none'
+
+
+# AKIDCTVL4lFXe0ANdhXJ0Y6bx62mWGubDcmn
+# ve9RcliRxLgroZ7VgcMsBHQNQdqxDax9
+# ap-beijing
+# pub-bj-pic-1314730533
+# pub-bj-doc-1314730533
+
 def writeio():
     global cos_secret
     global secret_id
     global secret_key
     global region
     filecos_ok = 0
-    while (filecos_ok != 1):
-        if os.path.exists('COS.secret'):
-            filepath = 'COS.secret'
-            with open(filepath, 'r', encoding='UTF-8') as file:
+    writer = 0
+    while filecos_ok != 1:
+        if os.path.exists('COS.secret') and os.path.getsize('COS.secret') != 0:
+            with open('COS.secret', 'r', encoding='UTF-8') as file:
                 timel = 0
                 for line in file:
                     cos_secret[timel] = line.strip()
@@ -34,7 +43,7 @@ def writeio():
             filecos_ok = 1
             print("==COS参数加载完成==\n")
         else:
-            f = open("COS.secret", "x")
+            f = open("COS.secret","w")
             print("当前不存在COS参数，请输入参数\n")
             f.write(input("输入secretid\n") + "\n")
             f.write(input("输入secretkey\n") + "\n")
@@ -42,14 +51,15 @@ def writeio():
             f.write(input("输入图片库名\n") + "\n")
             f.write(input("输入文档库名\n") + "\n")
             f.close()
-    secret_id=cos_secret[0]
-    secret_key=cos_secret[1]
-    region=cos_secret[2]
+    secret_id = cos_secret[0]
+    secret_key = cos_secret[1]
+    region = cos_secret[2]
 
 def uploada(bucketx):
     print("请选择你要上传的文件")
     filepathall = filedialog.askopenfilename()  # 获得选择好的文件
     uploadfile(filepathall)
+
 
 def uploadb(bucketx):
     global isallfak
@@ -63,8 +73,9 @@ def uploadb(bucketx):
     g = os.walk(Folderpath)
     for path, dir_list, file_list in g:
         for file_name in file_list:
-            filepathall = Folderpath+"/"+file_name
+            filepathall = Folderpath + "/" + file_name
             uploadfile(filepathall)
+
 
 def uploadfile(filepathall):
     ##### -----1.连接桶部分-----#####
@@ -75,20 +86,20 @@ def uploadfile(filepathall):
     config = CosConfig(Region=region, SecretId=secret_id,
                        SecretKey=secret_key, Token=token, Scheme=scheme)  # type: ignore
     client = CosS3Client(config)
-##### -----2.引入分割文件名os-----#####
+    ##### -----2.引入分割文件名os-----#####
     (ext, filename) = os.path.splitext(filepathall)
     fileext = filename
     (path, filename) = os.path.split(filepathall)
     filepath0 = path
-##### -----3.询问随机文件名-----#####
+    ##### -----3.询问随机文件名-----#####
     if (isallfak == 0):
         isfaker = input("是否使用随机文件名？（建议图床使用）\nY)使用\nN)不使用\n")
         if (isfaker == 'Y'):
             filename = f.pystr() + fileext
     if (isallfak == 1):
         filename = f.pystr() + fileext
-    print("本地上传文件地址为"+filepathall)
-##### -----4.判断桶种有无重名项-----#####
+    print("本地上传文件地址为" + filepathall)
+    ##### -----4.判断桶种有无重名项-----#####
     response = client.object_exists(
         Bucket=bucketx,
         Key=filename)
@@ -97,7 +108,7 @@ def uploadfile(filepathall):
         print("是否重命名文件？")
         tod = input("A->重命名\nB->随机文件名\nC->继续上传\n")
         if (tod == 'A'):
-            filename = input("请重新输入文件名\n")+fileext
+            filename = input("请重新输入文件名\n") + fileext
         if (tod == 'B'):
             filename = f.pystr() + fileext
         if (tod == 'C'):
@@ -115,7 +126,7 @@ def uploadfile(filepathall):
         response = client.object_exists(
             Bucket=bucketx,
             Key=filename)
-##### -----5.开始上传-----#####
+    ##### -----5.开始上传-----#####
     response = client.upload_file(
         Bucket=bucketx,
         Key=filename,
@@ -123,20 +134,21 @@ def uploadfile(filepathall):
         EnableMD5=False,
         progress_callback=None
     )
-##### -----6.总结-----#####
+    ##### -----6.总结-----#####
     global timex
     global address
     print("╔══════════════════╗")
     print("║     上传成功！   ║")
     print("╚══════════════════╝")
     if lib == 1:
-        address[timex] = 'https://'+cos_secret[3]+'.cos.'+cos_secret[2]+'.myqcloud.com/'+filename
+        address[timex] = 'https://' + cos_secret[3] + '.cos.' + cos_secret[2] + '.myqcloud.com/' + filename
         print("===>>本次上传文件地址为", address[timex])
-        timex = timex+1
+        timex = timex + 1
     if lib == 2:
-        address[timex] = 'https://'+cos_secret[4]+'.cos.'+cos_secret[2]+'.myqcloud.com/'+filename
+        address[timex] = 'https://' + cos_secret[4] + '.cos.' + cos_secret[2] + '.myqcloud.com/' + filename
         print("===>>本次上传文件地址为", address[timex])
-        timex = timex+1
+        timex = timex + 1
+
 
 ##### ==========入口==========#####
 while (isreturn == 1):
@@ -165,8 +177,8 @@ while (isreturn == 1):
         print(address[n])
     nextx = input("按N继续上传\n")
     if (nextx == 'N'):
-        for i in range(0,100000):
-            address[i]=0
+        for i in range(0, 100000):
+            address[i] = 0
         isreturn = 1
     else:
         isreturn = 0
