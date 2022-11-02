@@ -130,11 +130,11 @@ def uploadfile(filepathall):
     print("║     上传成功！   ║")
     print("╚══════════════════╝")
     if lib == 1:
-        address[timex] = 'https://pub-bj-pic-1314730533.cos.ap-beijing.myqcloud.com/'+filename
+        address[timex] = 'https://'+cos_secret[3]+'.cos.ap-beijing.myqcloud.com/'+filename
         print("===>>本次上传文件地址为", address[timex])
         timex = timex+1
     if lib == 2:
-        address[timex] = 'https://pub-bj-doc-1314730533.cos.ap-beijing.myqcloud.com/'+filename
+        address[timex] = 'https://'+cos_secret[4]+'.cos.ap-beijing.myqcloud.com/'+filename
         print("===>>本次上传文件地址为", address[timex])
         timex = timex+1
 
