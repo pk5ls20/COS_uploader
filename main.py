@@ -19,13 +19,6 @@ secret_id = 'none'
 secret_key = 'none'
 region = 'none'
 
-
-# AKIDCTVL4lFXe0ANdhXJ0Y6bx62mWGubDcmn
-# ve9RcliRxLgroZ7VgcMsBHQNQdqxDax9
-# ap-beijing
-# pub-bj-pic-1314730533
-# pub-bj-doc-1314730533
-
 def writeio():
     global cos_secret
     global secret_id
