@@ -11,7 +11,7 @@
 - [x] 上传时检测文件名是否重复，避免覆盖COS内原文件
 - [x] 上传文件时随机文件名，省心省事
 ----
-### 使用方法
+### 部署方法
 1. 购买腾讯云COS资源，并**至少创建两个**[存储桶](https://console.cloud.tencent.com/cos/bucket)  
 注意：存储桶权限须设置为**公有读私有写**
 1. 为脚本[申请API密钥](https://console.cloud.tencent.com/cam/capi)
