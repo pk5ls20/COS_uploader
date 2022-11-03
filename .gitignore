@@ -5,3 +5,7 @@
 /base64test2.py
 /base64test3.py
 /需求.md
+__pycache__/
+build/
+dist/
+/main.spec
