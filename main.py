@@ -206,7 +206,7 @@ def uploadfile(filepathall):
 while (isreturn == 1):
     print("╔══════════════════════════════╗")
     print("║    COS图床文件上传脚本       ║")
-    print("║    v1.6 By pk5 2022-10-31    ║")
+    print("║    v1.7 By pk5 2022-11-03    ║")
     print("╚══════════════════════════════╝")
     writeio()
     lib = int(input("请选择要上传的库\n1->图片库\n2->文档库\n"))
