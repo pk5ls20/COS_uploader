@@ -43,7 +43,7 @@ def compass():
     else:
         if os.path.exists('COS.secret.enc'):
             print("当前存在无效参数，请删除同目录下COS.secret.enc后重试！\n")
-            if timex3==1: exit()
+            if timex3==1: sys.exit()
             timex3=1
             return False
         else:
