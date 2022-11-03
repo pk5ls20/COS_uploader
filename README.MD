@@ -10,6 +10,7 @@
 - [x] 一次上传一个/多个文件
 - [x] 上传时检测文件名是否重复，避免覆盖COS内原文件
 - [x] 上传文件时随机文件名，省心省事
+- [x] 本地加密保存API密钥等个人参数（[参考 the-javapocalypse/Python-File-Encryptor](https://github.com/the-javapocalypse/Python-File-Encryptor)）
 ----
 ### 部署方法
 1. 购买腾讯云COS资源，并**至少创建两个**[存储桶](https://console.cloud.tencent.com/cos/bucket)  
@@ -30,6 +31,9 @@ pip install faker
 
 ### 待填坑
 - [ ] 错误处理
+
+### Licence
+**MIT Licence**
 
 由于作者是python小白，代码难免会有bug，欢迎各位发issue   
 ~~PS.真的有人会看到我这个破脚本吗hhhh~~

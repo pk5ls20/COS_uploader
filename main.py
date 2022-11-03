@@ -1,11 +1,15 @@
-import logging
 import os
 import sys
+import time
+import logging
 from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
 import tkinter as tk
 from tkinter import filedialog
 from faker import Faker
+from Encryptor import enc
+from Encryptor import clear
+from Crypto.Cipher import AES
 
 f = Faker(locale='zh_CN')
 root = tk.Tk()
@@ -13,43 +17,98 @@ root.withdraw()
 timex = 0
 isreturn = 1
 isallfak = 0
+filecos_ok = 0
 address = [0] * 100000
 cos_secret = [0] * 5
 secret_id = 'none'
 secret_key = 'none'
 region = 'none'
+timex3=0
 
-def writeio():
+
+def compass():
+    global timex3
+    if os.path.exists('SPA.secret.enc'):
+        l = str(input("请输入参数密码\n"))
+        enc.decrypt_file('SPA.secret.enc')
+        file = open('SPA.secret', 'r')
+        if file.readline() == l:
+            file.close()
+            enc.encrypt_file('SPA.secret')
+            return True
+        else:
+            file.close()
+            enc.encrypt_file('SPA.secret')
+            return False
+    else:
+        if os.path.exists('COS.secret.enc'):
+            print("当前存在无效参数，请删除同目录下COS.secret.enc后重试！\n")
+            if timex3==1: exit()
+            timex3=1
+            return False
+        else:
+            ff = open("SPA.secret", "w")
+            ff.write(input("请输入初始密码！\n"))
+            ff.close()
+            enc.encrypt_file('SPA.secret')
+            return True
+
+def writeio2():
+    # 目前存在COS.secret
+    # 需要将COS.secret录入list，然后将COS.secret重新加密
     global cos_secret
     global secret_id
     global secret_key
     global region
-    filecos_ok = 0
-    writer = 0
-    while filecos_ok != 1:
-        if os.path.exists('COS.secret') and os.path.getsize('COS.secret') != 0:
-            with open('COS.secret', 'r', encoding='UTF-8') as file:
-                timel = 0
-                for line in file:
-                    cos_secret[timel] = line.strip()
-                    timel = timel + 1
-            filecos_ok = 1
-            print("==COS参数加载完成==\n")
-        else:
-            f = open("COS.secret","w")
-            print("当前不存在COS参数，请输入参数\n")
-            f.write(input("输入secretid\n") + "\n")
-            f.write(input("输入secretkey\n") + "\n")
-            f.write(input("输入Region\n") + "\n")
-            f.write(input("输入图片库名\n") + "\n")
-            f.write(input("输入文档库名\n") + "\n")
-            f.close()
+    global filecos_ok
+    # 1.将COS.secret内容进入列表变量中
+    with open('COS.secret', 'r', encoding='UTF-8') as file:
+        timel = 0
+        for line in file:
+            cos_secret[timel] = line.strip()
+            timel = timel + 1
     secret_id = cos_secret[0]
     secret_key = cos_secret[1]
     region = cos_secret[2]
+    print("===COS参数加载完成===\n")
+    # 2.调用函数：删除COS.secret，得到COS.secret.enc
+    enc.encrypt_file('COS.secret')
+    filecos_ok = 1
+
+def writeio():
+    writer = 0
+    while filecos_ok != 1:
+        # 注意，这个判定要改的
+        if os.path.exists('COS.secret.enc'):
+            # 存在 COS.secret.enc
+            # 1.进入密码函数
+            if compass():
+                # 2.调用函数：删除COS.secret.enc，得到COS.secret
+                enc.decrypt_file('COS.secret.enc')
+                # 3.进入writeio2
+                writeio2()
+            else:
+                print("密码输入错误，请重新输入！\n")
+        else:
+            # 不存在COS.secret.enc
+            # 1.进入密码函数
+            compass()
+            # 2.创建COS.secret
+            fx = open("COS.secret", "w")
+            print("当前不存在COS参数，请输入参数\n")
+            # 3.录入COS.secret
+            fx.write(input("输入secretid\n") + "\n")
+            fx.write(input("输入secretkey\n") + "\n")
+            fx.write(input("输入Region\n") + "\n")
+            fx.write(input("输入图片库名\n") + "\n")
+            fx.write(input("输入文档库名\n") + "\n")
+            fx.close()
+            # 4.进入writeio2
+            writeio2()
+
 
 def uploada(bucketx):
-    print("请选择你要上传的文件")
+    print("请选择你要上传的文件\n")
     filepathall = filedialog.askopenfilename()  # 获得选择好的文件
     uploadfile(filepathall)
 
