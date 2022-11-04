@@ -157,7 +157,7 @@ def uploadfile(filepathall):
     global addressl
     try:
         ##### -----1.连接桶部分-----#####
-        logging.basicConfig(level=logging.INFO, stream=sys.stdout)  # 输出日志，可以去掉qwq
+        # logging.basicConfig(level=logging.INFO, stream=sys.stdout)  # 输出日志，可以去掉qwq
         print("开始上传...")
         config = CosConfig(Region=a_key[2], SecretId=a_key[0],
                            SecretKey=a_key[1], Token=None, Scheme='https')  # type: ignore
