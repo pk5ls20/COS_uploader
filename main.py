@@ -2,6 +2,7 @@
 import os
 import sys
 import linecache
+import atexit
 from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
 from qcloud_cos import CosServiceError
@@ -29,6 +30,13 @@ region = 'none'
 timex3=0
 pas0=''
 
+# 最后不要忘了删除明文
+def del_db_run_away():
+    if os.path.exists('SPA.secret'):
+        enc.encrypt_file('SPA.secret')
+    if os.path.exists('COS.secret'):
+        enc.encrypt_file('COS.secret')
+
 # 函数：比较密码：
 def compass():
     global pas0
@@ -44,7 +52,7 @@ def compass():
                 if linecache.getline('COS.secret', 6) == l+'\n':
                     file.close()
                     enc.encrypt_file('COS.secret')
-                    enc.encrypt_file('SPA.secret')
+                    # enc.encrypt_file('SPA.secret')
                     return True
                 else:
                     file.close()
@@ -251,10 +259,11 @@ def exitx2():
     sys.exit()
 
 ##### ==========入口==========#####
+atexit.register(del_db_run_away)
 while (isreturn == 1):
     print("╔══════════════════════════════╗")
     print("║     COS图床文件上传脚本      ║")
-    print("║   v1.9.0 By pk5 2022-11-04   ║")
+    print("║   v1.9.1 By pk5 2022-11-04   ║")
     print("╚══════════════════════════════╝")
     writeio()
     try:
