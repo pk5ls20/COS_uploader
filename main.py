@@ -1,7 +1,6 @@
+# 引入库
 import os
 import sys
-import time
-import logging
 from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
 import tkinter as tk
@@ -9,9 +8,8 @@ from tkinter import filedialog
 from faker import Faker
 from tqdm import tqdm
 from Encryptor import enc
-from Encryptor import clear
-from Crypto.Cipher import AES
 
+# 初始变量设定
 f = Faker(locale='zh_CN')
 root = tk.Tk()
 root.withdraw()
@@ -25,7 +23,6 @@ secret_id = 'none'
 secret_key = 'none'
 region = 'none'
 timex3=0
-
 
 def compass():
     global timex3
@@ -107,12 +104,10 @@ def writeio():
             # 4.进入writeio2
             writeio2()
 
-
 def uploada(bucketx):
     print("请选择你要上传的文件\n")
     filepathall = filedialog.askopenfilename()  # 获得选择好的文件
     uploadfile(filepathall)
-
 
 def uploadb(bucketx):
     global isallfak
@@ -132,9 +127,9 @@ def uploadb(bucketx):
 def upload_percentage(consumed_bytes, total_bytes):
     # 进度条回调函数，计算当前上传的百分比
     ratex=0
+    pbar = tqdm(total=100)
     if total_bytes:
         rate = int(100 * (float(consumed_bytes) / float(total_bytes)))
-        pbar = tqdm(total=100)
         pbar.update(rate-ratex)
         ratex=rate
     pbar.close()
@@ -211,7 +206,6 @@ def uploadfile(filepathall):
         address[timex] = 'https://' + cos_secret[4] + '.cos.' + cos_secret[2] + '.myqcloud.com/' + filename
         print("===>>本次上传文件地址为", address[timex])
         timex = timex + 1
-
 
 ##### ==========入口==========#####
 while (isreturn == 1):
