@@ -11,3 +11,5 @@ build/
 dist/
 /main.spec
 /CHECKED.MD
+/main_OLD.py
+/comparenew.py
