@@ -233,7 +233,6 @@ def exitx2():
     print("读取参数失败，程序即将退出！")
     sys.exit()
 
-
 ##### ==========入口==========#####
 atexit.register(del_db_run_away)
 while (isreturn == 1):
