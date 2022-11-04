@@ -7,6 +7,7 @@ from qcloud_cos import CosS3Client
 import tkinter as tk
 from tkinter import filedialog
 from faker import Faker
+from tqdm import tqdm
 from Encryptor import enc
 from Encryptor import clear
 from Crypto.Cipher import AES
@@ -128,10 +129,20 @@ def uploadb(bucketx):
             filepathall = Folderpath + "/" + file_name
             uploadfile(filepathall)
 
+def upload_percentage(consumed_bytes, total_bytes):
+    # 进度条回调函数，计算当前上传的百分比
+    ratex=0
+    if total_bytes:
+        rate = int(100 * (float(consumed_bytes) / float(total_bytes)))
+        pbar = tqdm(total=100)
+        pbar.update(rate-ratex)
+        ratex=rate
+    pbar.close()
 
 def uploadfile(filepathall):
+
     ##### -----1.连接桶部分-----#####
-    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    # logging.basicConfig(level=logging.INFO, stream=sys.stdout) # 输出日志，可以去掉qwq
     print("=====连接存储桶...=====")
     token = None
     scheme = 'https'
@@ -184,7 +195,7 @@ def uploadfile(filepathall):
         Key=filename,
         LocalFilePath=filepathall,
         EnableMD5=False,
-        progress_callback=None
+        progress_callback=upload_percentage
     )
     ##### -----6.总结-----#####
     global timex
@@ -206,7 +217,7 @@ def uploadfile(filepathall):
 while (isreturn == 1):
     print("╔══════════════════════════════╗")
     print("║    COS图床文件上传脚本       ║")
-    print("║    v1.7 By pk5 2022-11-03    ║")
+    print("║    v1.8 By pk5 2022-11-04    ║")
     print("╚══════════════════════════════╝")
     writeio()
     lib = int(input("请选择要上传的库\n1->图片库\n2->文档库\n"))
