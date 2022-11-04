@@ -1,6 +1,7 @@
 # 引入库
 import os
 import sys
+import linecache
 from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
 from qcloud_cos import CosServiceError
@@ -21,14 +22,16 @@ isallfak = 0
 filecos_ok = 0
 address = [0] * 100000
 addressl= [0] * 100000
-cos_secret = [0] * 5
+cos_secret = [0] * 10
 secret_id = 'none'
 secret_key = 'none'
 region = 'none'
 timex3=0
+pas0=''
 
 # 函数：比较密码：
 def compass():
+    global pas0
     try:
         global timex3
         if os.path.exists('SPA.secret.enc'):
@@ -36,9 +39,19 @@ def compass():
             enc.decrypt_file('SPA.secret.enc')
             file = open('SPA.secret', 'r')
             if file.readline() == l:
-                file.close()
-                enc.encrypt_file('SPA.secret')
-                return True
+                # 双校验
+                enc.decrypt_file('COS.secret.enc')
+                if linecache.getline('COS.secret', 6) == l+'\n':
+                    file.close()
+                    enc.encrypt_file('COS.secret')
+                    enc.encrypt_file('SPA.secret')
+                    return True
+                else:
+                    file.close()
+                    print("密码校验失败！")
+                    enc.encrypt_file('COS.secret')
+                    enc.encrypt_file('SPA.secret')
+                    return False
             else:
                 file.close()
                 enc.encrypt_file('SPA.secret')
@@ -50,8 +63,9 @@ def compass():
                 timex3=1
                 return False
             else:
+                pas0=input("请输入初始密码！\n")
                 ff = open("SPA.secret", "w")
-                ff.write(input("请输入初始密码！\n"))
+                ff.write(pas0)
                 ff.close()
                 enc.encrypt_file('SPA.secret')
                 return True
@@ -84,6 +98,7 @@ def writeio2():
 
 # 函数：写入参数
 def writeio():
+    global pas0
     try:
         writer = 0
         while filecos_ok != 1:
@@ -111,6 +126,7 @@ def writeio():
                 fx.write(input("输入Region\n") + "\n")
                 fx.write(input("输入图片库名\n") + "\n")
                 fx.write(input("输入文档库名\n") + "\n")
+                fx.write(pas0)
                 fx.close()
                 # 4.进入writeio2
                 writeio2()
@@ -238,7 +254,7 @@ def exitx2():
 while (isreturn == 1):
     print("╔══════════════════════════════╗")
     print("║     COS图床文件上传脚本      ║")
-    print("║   v1.8.5 By pk5 2022-11-04   ║")
+    print("║   v1.9.0 By pk5 2022-11-04   ║")
     print("╚══════════════════════════════╝")
     writeio()
     try:
