@@ -1,3 +1,4 @@
+## [GUI版](https://github.com/pk5ls20/COS_uploader_GUI)已开发完成，欢迎来star
 ## 这是一个快速将图片/小文件上传到腾讯云COS的脚本
 > But...
 #### 为什么要把腾讯云COS用作图床呢？
