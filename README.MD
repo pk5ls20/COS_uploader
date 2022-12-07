@@ -1,3 +1,4 @@
+## [GUI版](https://github.com/pk5ls20/COS_uploader_GUI)已开发完成，欢迎来star
 ## 这是一个快速将图片/小文件上传到腾讯云COS的脚本
 > But...
 #### 为什么要把腾讯云COS用作图床呢？
@@ -22,10 +23,7 @@
 2. 为脚本[申请API密钥](https://console.cloud.tencent.com/cam/capi)
 3. 安装需要的python包
  ```
-pip install -U cos-python-sdk-v5
-pip install tkinter
-pip install faker
-pip install tqdm
+pip install -r requirements.txt
 ```
 4. 打开`main.py`
 5. 可以愉快的食用了 :)

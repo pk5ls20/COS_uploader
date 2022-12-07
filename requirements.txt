@@ -1,0 +1,5 @@
+cos_python_sdk_v5==1.9.20
+Faker==15.1.1
+pycryptodome==3.16.0
+qcloud_cos==3.3.6
+tqdm==4.64.1
