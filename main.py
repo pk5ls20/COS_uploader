@@ -32,7 +32,7 @@ timex3 = 0
 pas0 = ''
 a_key = [0] * 10
 a_pas = ''
-
+global pb
 
 # 最后不要忘了删除明文
 def del_db_run_away():
@@ -138,16 +138,25 @@ def uploadb(bucketx):
             uploadfile(filepathall)
 
 
+class pbar_x:
+    def __init__(self,size):
+        self.pbar = tqdm(total=size*1.03, colour='green')
+
+    def update(self, num):
+        self.pbar.update(num)
+
+    def close(self):
+        self.pbar.close()
+
+
 # 函数：进度条回调，计算当前上传的百分比
 def upload_percentage(consumed_bytes, total_bytes):
     # 进度条回调函数，计算当前上传的百分比
     ratex = 0
-    pbar = tqdm(total=100)
     if total_bytes:
         rate = int(100 * (float(consumed_bytes) / float(total_bytes)))
-        pbar.update(rate - ratex)
+        pb.update(rate - ratex)
         ratex = rate
-    pbar.close()
 
 
 # 函数：上传文件主函数
@@ -155,6 +164,7 @@ def uploadfile(filepathall):
     global timex
     global address
     global addressl
+    global pb
     try:
         ##### -----1.连接桶部分-----#####
         # logging.basicConfig(level=logging.INFO, stream=sys.stdout)  # 输出日志，可以去掉qwq
@@ -204,6 +214,9 @@ def uploadfile(filepathall):
                 Key=filename)
         ##### -----5.开始上传-----#####
         print("开始上传啦~")
+        f_size = os.path.getsize(filepathall)
+        if f_size > 20971520:
+            pb = pbar_x(f_size / 1024 / 1024 * 50)
         response = client.upload_file(
             Bucket=bucketx,
             Key=filename,
@@ -212,16 +225,18 @@ def uploadfile(filepathall):
             progress_callback=upload_percentage
         )
         ##### -----6.总结-----#####
+        if f_size > 20971520:
+            pb.close()
         print("上传成功！")
         if lib == 1:
-            address[timex] = 'https://' + a_key[3] + '.cos.' + a_key[2] + '.myqcloud.com/' + filename
+            address[timex] = 'https://' + str(a_key[3]) + '.cos.' + str(a_key[2]) + '.myqcloud.com/' + filename
             timex = timex + 1
         if lib == 2:
-            address[timex] = 'https://' + a_key[4] + '.cos.' + a_key[2] + '.myqcloud.com/' + filename
+            address[timex] = 'https://' + str(a_key[4]) + '.cos.' + str(a_key[2]) + '.myqcloud.com/' + filename
             timex = timex + 1
     except (CosServiceError, CosClientError):
         input("上传COS中出现异常\n请确定参数是否正确以及网络是否畅通\n程序即将退出！")
-        sys.exit
+        sys.exit()
 
 
 def exitx():
@@ -233,12 +248,13 @@ def exitx2():
     print("读取参数失败，程序即将退出！")
     sys.exit()
 
+
 ##### ==========入口==========#####
 atexit.register(del_db_run_away)
 while (isreturn == 1):
     print("╔══════════════════════════════╗")
     print("║     COS图床文件上传脚本      ║")
-    print("║   v1.9.3 By pk5 2022-11-05   ║")
+    print("║   v1.10  By pk5 2022-12-25   ║")
     print("╚══════════════════════════════╝")
     while writeio() == False:
         print("密码错误，请重新输入！\n")
@@ -264,9 +280,9 @@ while (isreturn == 1):
     print("║      全部上传完毕！现在输出上传文件地址     ║")
     print("╚═════════════════════════════════════════════╝")
     for n in range(0, timex):
-        print("本地地址：", end=addressl[n])
+        print("本地地址：", end=str(addressl[n]))
         print("\n")
-        print("文件链接：", end=address[n])
+        print("文件链接：", end=str(address[n]))
         print("\n")
     nextx = input("按N继续上传\n")
     if (nextx == 'N'):
